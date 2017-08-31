@@ -1,0 +1,8 @@
+1,Janta Stores,1,Delhi
+4,Supply Solutions,2,Banglore
+5,Qwert Electricals,7,London
+8,Saha Traders,4,London
+12,Mercy Electronics,4,Madhurai
+32,Sri Supplies,3,Chennai
+76,XYZ Supplies,5,Delhi
+

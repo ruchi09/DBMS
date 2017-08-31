@@ -1,0 +1,435 @@
+mysql> select DOB,address from employee where f_name='ganesh' and minit='s' and l_name='nayar';
++------------+---------+
+| DOB        | address |
++------------+---------+
+| 1978-11-09 | Delhi   |
++------------+---------+
+1 row in set (0.00 sec)
+
+
+mysql> select f_name,l_name,address from employee,dept where Dno=dnum and dname='MDM';
++----------+----------+---------+
+| f_name   | l_name   | address |
++----------+----------+---------+
+| mahesh   | sodankur | Chennai |
+| rakshita | purohit  | Chennai |
+| rajesh   | krishnan | Chennai |
++----------+----------+---------+
+3 rows in set (0.00 sec)
+
+mysql> select p_num,project.Dnum,l_name,address,DOB from project,dept,employee where p_locn='Delhi' and project.Dnum=dept.dnum and mangr_ssn=ssn;
++-------+------+--------+---------+------------+
+| p_num | Dnum | l_name | address | DOB        |
++-------+------+--------+---------+------------+
+|     1 |   11 | bhat   | Mumbai  | 1996-09-07 |
++-------+------+--------+---------+------------+
+1 row in set (0.00 sec)
+
+mysql> select e.f_name,e.l_name,s.f_name,s.l_name from employee e,employee s where e.super_ssn=s.ssn;
++----------+----------+----------+----------+
+| f_name   | l_name   | f_name   | l_name   |
++----------+----------+----------+----------+
+| akshata  | hegde    | rajesh   | shetty   |
+| manish   | pandey   | rajesh   | shetty   |
+| swathi   | bhat     | manish   | pandey   |
+| prajna   | alate    | rajesh   | krishnan |
+| rajani   | bayri    | ganesh   | nayar    |
+| mahesh   | sodankur | rakshita | purohit  |
+| rakshita | purohit  | rajesh   | krishnan |
+| ravi     | bhat     | swathi   | bhat     |
++----------+----------+----------+----------+
+8 rows in set (0.00 sec)
+
+mysql> select ssn from employee;
++------------+
+| ssn        |
++------------+
+| 2395480001 |
+| 2395480002 |
+| 2395480005 |
+| 2395480011 |
+| 2395480003 |
+| 2395480008 |
+| 2395480012 |
+| 2395480015 |
+| 2395480009 |
+| 2395480010 |
+| 2395480014 |
++------------+
+11 rows in set (0.00 sec)
+
+mysql> select ssn,dname from employee,dept;
++------------+-------+
+| ssn        | dname |
++------------+-------+
+| 2395480001 | COE   |
+| 2395480001 | EDM   |
+| 2395480001 | MDM   |
+| 2395480002 | COE   |
+| 2395480002 | EDM   |
+| 2395480002 | MDM   |
+| 2395480005 | COE   |
+| 2395480005 | EDM   |
+| 2395480005 | MDM   |
+| 2395480011 | COE   |
+| 2395480011 | EDM   |
+| 2395480011 | MDM   |
+| 2395480003 | COE   |
+| 2395480003 | EDM   |
+| 2395480003 | MDM   |
+| 2395480008 | COE   |
+| 2395480008 | EDM   |
+| 2395480008 | MDM   |
+| 2395480012 | COE   |
+| 2395480012 | EDM   |
+| 2395480012 | MDM   |
+| 2395480015 | COE   |
+| 2395480015 | EDM   |
+| 2395480015 | MDM   |
+| 2395480009 | COE   |
+| 2395480009 | EDM   |
+| 2395480009 | MDM   |
+| 2395480010 | COE   |
+| 2395480010 | EDM   |
+| 2395480010 | MDM   |
+| 2395480014 | COE   |
+| 2395480014 | EDM   |
+| 2395480014 | MDM   |
++------------+-------+
+33 rows in set (0.01 sec)
+
+mysql> select *from employee,dept;
++----------+-------+----------+------------+------------+-----------+------+--------+------------+------+------------+-------+------+------------+---------------+
+| f_name   | minit | l_name   | ssn        | DOB        | address   | sex  | salary | Super_ssn  | Dno  | mobile_no  | dname | dnum | mangr_ssn  | mgr_strt_date |
++----------+-------+----------+------------+------------+-----------+------+--------+------------+------+------------+-------+------+------------+---------------+
+| akshata  | g     | hegde    | 2395480001 | 1997-10-19 | Bangalore | F    |  97500 | 2395480011 |   10 | 9449671235 | COE   |   10 | 2395480002 | 2015-06-14    |
+| akshata  | g     | hegde    | 2395480001 | 1997-10-19 | Bangalore | F    |  97500 | 2395480011 |   10 | 9449671235 | EDM   |   11 | 2395480003 | 2013-03-31    |
+| akshata  | g     | hegde    | 2395480001 | 1997-10-19 | Bangalore | F    |  97500 | 2395480011 |   10 | 9449671235 | MDM   |   12 | 2395480010 | 2017-02-17    |
+| manish   | r     | pandey   | 2395480002 | 1992-01-14 | Mumbai    | M    | 162500 | 2395480011 |   10 | 9449073255 | COE   |   10 | 2395480002 | 2015-06-14    |
+| manish   | r     | pandey   | 2395480002 | 1992-01-14 | Mumbai    | M    | 162500 | 2395480011 |   10 | 9449073255 | EDM   |   11 | 2395480003 | 2013-03-31    |
+| manish   | r     | pandey   | 2395480002 | 1992-01-14 | Mumbai    | M    | 162500 | 2395480011 |   10 | 9449073255 | MDM   |   12 | 2395480010 | 2017-02-17    |
+| swathi   | s     | bhat     | 2395480003 | 1996-09-07 | Mumbai    | F    | 150000 | 2395480002 |   11 | 9489013850 | COE   |   10 | 2395480002 | 2015-06-14    |
+| swathi   | s     | bhat     | 2395480003 | 1996-09-07 | Mumbai    | F    | 150000 | 2395480002 |   11 | 9489013850 | EDM   |   11 | 2395480003 | 2013-03-31    |
+| swathi   | s     | bhat     | 2395480003 | 1996-09-07 | Mumbai    | F    | 150000 | 2395480002 |   11 | 9489013850 | MDM   |   12 | 2395480010 | 2017-02-17    |
+| prajna   | m     | alate    | 2395480005 | 1988-09-19 | Chennai   | F    |  19500 | 2395480014 |   10 | 9983016870 | COE   |   10 | 2395480002 | 2015-06-14    |
+| prajna   | m     | alate    | 2395480005 | 1988-09-19 | Chennai   | F    |  19500 | 2395480014 |   10 | 9983016870 | EDM   |   11 | 2395480003 | 2013-03-31    |
+| prajna   | m     | alate    | 2395480005 | 1988-09-19 | Chennai   | F    |  19500 | 2395480014 |   10 | 9983016870 | MDM   |   12 | 2395480010 | 2017-02-17    |
+| rajani   | m     | bayri    | 2395480008 | 1993-06-02 | Delhi     | F    |  60000 | 2395480015 |   11 | 9953026779 | COE   |   10 | 2395480002 | 2015-06-14    |
+| rajani   | m     | bayri    | 2395480008 | 1993-06-02 | Delhi     | F    |  60000 | 2395480015 |   11 | 9953026779 | EDM   |   11 | 2395480003 | 2013-03-31    |
+| rajani   | m     | bayri    | 2395480008 | 1993-06-02 | Delhi     | F    |  60000 | 2395480015 |   11 | 9953026779 | MDM   |   12 | 2395480010 | 2017-02-17    |
+| mahesh   | k     | sodankur | 2395480009 | 1989-12-23 | Chennai   | M    |  25000 | 2395480010 |   12 | 8753026706 | COE   |   10 | 2395480002 | 2015-06-14    |
+| mahesh   | k     | sodankur | 2395480009 | 1989-12-23 | Chennai   | M    |  25000 | 2395480010 |   12 | 8753026706 | EDM   |   11 | 2395480003 | 2013-03-31    |
+| mahesh   | k     | sodankur | 2395480009 | 1989-12-23 | Chennai   | M    |  25000 | 2395480010 |   12 | 8753026706 | MDM   |   12 | 2395480010 | 2017-02-17    |
+| rakshita | r     | purohit  | 2395480010 | 1991-02-18 | Chennai   | F    | 100000 | 2395480014 |   12 | 8744027095 | COE   |   10 | 2395480002 | 2015-06-14    |
+| rakshita | r     | purohit  | 2395480010 | 1991-02-18 | Chennai   | F    | 100000 | 2395480014 |   12 | 8744027095 | EDM   |   11 | 2395480003 | 2013-03-31    |
+| rakshita | r     | purohit  | 2395480010 | 1991-02-18 | Chennai   | F    | 100000 | 2395480014 |   12 | 8744027095 | MDM   |   12 | 2395480010 | 2017-02-17    |
+| rajesh   | r     | shetty   | 2395480011 | 1993-04-14 | Bangalore | M    | 130000 | NULL       |   10 | 8696085145 | COE   |   10 | 2395480002 | 2015-06-14    |
+| rajesh   | r     | shetty   | 2395480011 | 1993-04-14 | Bangalore | M    | 130000 | NULL       |   10 | 8696085145 | EDM   |   11 | 2395480003 | 2013-03-31    |
+| rajesh   | r     | shetty   | 2395480011 | 1993-04-14 | Bangalore | M    | 130000 | NULL       |   10 | 8696085145 | MDM   |   12 | 2395480010 | 2017-02-17    |
+| ravi     | s     | bhat     | 2395480012 | 1997-03-10 | Mumbai    | M    | 100000 | 2395480003 |   11 | 9748027102 | COE   |   10 | 2395480002 | 2015-06-14    |
+| ravi     | s     | bhat     | 2395480012 | 1997-03-10 | Mumbai    | M    | 100000 | 2395480003 |   11 | 9748027102 | EDM   |   11 | 2395480003 | 2013-03-31    |
+| ravi     | s     | bhat     | 2395480012 | 1997-03-10 | Mumbai    | M    | 100000 | 2395480003 |   11 | 9748027102 | MDM   |   12 | 2395480010 | 2017-02-17    |
+| rajesh   | p     | krishnan | 2395480014 | 1990-08-28 | Chennai   | M    |  90000 | NULL       |   12 | 9698065145 | COE   |   10 | 2395480002 | 2015-06-14    |
+| rajesh   | p     | krishnan | 2395480014 | 1990-08-28 | Chennai   | M    |  90000 | NULL       |   12 | 9698065145 | EDM   |   11 | 2395480003 | 2013-03-31    |
+| rajesh   | p     | krishnan | 2395480014 | 1990-08-28 | Chennai   | M    |  90000 | NULL       |   12 | 9698065145 | MDM   |   12 | 2395480010 | 2017-02-17    |
+| ganesh   | s     | nayar    | 2395480015 | 1978-11-09 | Delhi     | M    |  90000 | NULL       |   11 | 8798025112 | COE   |   10 | 2395480002 | 2015-06-14    |
+| ganesh   | s     | nayar    | 2395480015 | 1978-11-09 | Delhi     | M    |  90000 | NULL       |   11 | 8798025112 | EDM   |   11 | 2395480003 | 2013-03-31    |
+| ganesh   | s     | nayar    | 2395480015 | 1978-11-09 | Delhi     | M    |  90000 | NULL       |   11 | 8798025112 | MDM   |   12 | 2395480010 | 2017-02-17    |
++----------+-------+----------+------------+------------+-----------+------+--------+------------+------+------------+-------+------+------------+---------------+
+33 rows in set (0.00 sec)
+
+mysql> select *from employee where Dno=10;
++---------+-------+--------+------------+------------+-----------+------+--------+------------+------+------------+
+| f_name  | minit | l_name | ssn        | DOB        | address   | sex  | salary | Super_ssn  | Dno  | mobile_no  |
++---------+-------+--------+------------+------------+-----------+------+--------+------------+------+------------+
+| akshata | g     | hegde  | 2395480001 | 1997-10-19 | Bangalore | F    |  97500 | 2395480011 |   10 | 9449671235 |
+| manish  | r     | pandey | 2395480002 | 1992-01-14 | Mumbai    | M    | 162500 | 2395480011 |   10 | 9449073255 |
+| prajna  | m     | alate  | 2395480005 | 1988-09-19 | Chennai   | F    |  19500 | 2395480014 |   10 | 9983016870 |
+| rajesh  | r     | shetty | 2395480011 | 1993-04-14 | Bangalore | M    | 130000 | NULL       |   10 | 8696085145 |
++---------+-------+--------+------------+------------+-----------+------+--------+------------+------+------------+
+4 rows in set (0.00 sec)
+
+mysql> select salary from employee;
++--------+
+| salary |
++--------+
+|  97500 |
+| 162500 |
+| 150000 |
+|  19500 |
+|  60000 |
+|  25000 |
+| 100000 |
+| 130000 |
+| 100000 |
+|  90000 |
+|  90000 |
++--------+
+11 rows in set (0.00 sec)
+
+mysql> select distinct salary from employee;
++--------+
+| salary |
++--------+
+|  97500 |
+| 162500 |
+| 150000 |
+|  19500 |
+|  60000 |
+|  25000 |
+| 100000 |
+| 130000 |
+|  90000 |
++--------+
+9 rows in set (0.00 sec)
+
+mysql> select distinct p_num from project,works_on,dept,employee where (project.Dnum=dept.dnum and mangr_ssn = ssn and l_name = 'bhat') or (Essn=ssn and l_name='bhat' and p_no=p_num);
++-------+
+| p_num |
++-------+
+|     1 |
+|    20 |
++-------+
+2 rows in set (0.00 sec)
+
+mysql> select f_name,l_name from employee where address='Bangalore';
++---------+--------+
+| f_name  | l_name |
++---------+--------+
+| akshata | hegde  |
+| rajesh  | shetty |
++---------+--------+
+2 rows in set (0.00 sec)
+
+mysql> select f_name,l_name from employee where DOB like '__8_______';
++--------+----------+
+| f_name | l_name   |
++--------+----------+
+| prajna | alate    |
+| mahesh | sodankur |
++--------+----------+
+2 rows in set, 1 warning (0.00 sec)
+
+mysql> select f_name,l_name,1.1*salary as increased_salary from employee,project,works_on where Essn=ssn and p_no=p_num and p_name='ProductX';
++--------+--------+------------------+
+| f_name | l_name | increased_salary |
++--------+--------+------------------+
+| rajani | bayri  |          66000.0 |
+| ganesh | nayar  |          99000.0 |
++--------+--------+------------------+
+2 rows in set (0.01 sec)
+
+mysql> select *from employee where (salary between 30000 and 40000) and Dno = 12;
+Empty set (0.00 sec)
+
+mysql> select dname,f_name,l_name,p_name from employee,dept,project,works_on where p_no=p_num and ssn=Essn and dept.dnum = Dno order by dname,l_name,f_name;
++-------+----------+----------+-----------------+
+| dname | f_name   | l_name   | p_name          |
++-------+----------+----------+-----------------+
+| COE   | prajna   | alate    | Newbenefits     |
+| COE   | akshata  | hegde    | ProductZ        |
+| COE   | akshata  | hegde    | Computerization |
+| COE   | akshata  | hegde    | Newbenefits     |
+| COE   | manish   | pandey   | Newbenefits     |
+| COE   | manish   | pandey   | ProductZ        |
+| EDM   | rajani   | bayri    | ProductX        |
+| EDM   | ravi     | bhat     | Reorganization  |
+| EDM   | swathi   | bhat     | Reorganization  |
+| EDM   | ganesh   | nayar    | ProductX        |
+| MDM   | rajesh   | krishnan | ProductY        |
+| MDM   | rakshita | purohit  | ProductY        |
+| MDM   | mahesh   | sodankur | ProductY        |
++-------+----------+----------+-----------------+
+13 rows in set (0.02 sec)
+
+mysql> select dname,f_name,l_name,p_name from employee,dept,project,works_on where p_no=p_num and ssn=Essn and dept.dnum = Dno order by dname desc,l_name asc,f_name asc;
++-------+----------+----------+-----------------+
+| dname | f_name   | l_name   | p_name          |
++-------+----------+----------+-----------------+
+| MDM   | rajesh   | krishnan | ProductY        |
+| MDM   | rakshita | purohit  | ProductY        |
+| MDM   | mahesh   | sodankur | ProductY        |
+| EDM   | rajani   | bayri    | ProductX        |
+| EDM   | ravi     | bhat     | Reorganization  |
+| EDM   | swathi   | bhat     | Reorganization  |
+| EDM   | ganesh   | nayar    | ProductX        |
+| COE   | prajna   | alate    | Newbenefits     |
+| COE   | akshata  | hegde    | ProductZ        |
+| COE   | akshata  | hegde    | Computerization |
+| COE   | akshata  | hegde    | Newbenefits     |
+| COE   | manish   | pandey   | ProductZ        |
+| COE   | manish   | pandey   | Newbenefits     |
++-------+----------+----------+-----------------+
+13 rows in set (0.00 sec)
+
+mysql> select f_name,l_name from employee where super_ssn is NULL;
++--------+----------+
+| f_name | l_name   |
++--------+----------+
+| rajesh | shetty   |
+| rajesh | krishnan |
+| ganesh | nayar    |
++--------+----------+
+3 rows in set (0.00 sec)
+
+mysql> select distinct Essn from works_on where (p_no,hrs) in (select p_no,hrs from works_on where Essn=2395480001);
++------------+
+| Essn       |
++------------+
+| 2395480001 |
++------------+
+1 row in set (0.00 sec)
+
+mysql> select l_name,f_name from employee where salary > all(select salary from employee where Dno = 11);
++--------+--------+
+| l_name | f_name |
++--------+--------+
+| pandey | manish |
++--------+--------+
+1 row in set (0.00 sec)
+
+mysql> select l_name,f_name from employee where salary > all(select salary from employee where Dno = 12);
++--------+--------+
+| l_name | f_name |
++--------+--------+
+| pandey | manish |
+| bhat   | swathi |
+| shetty | rajesh |
++--------+--------+
+3 rows in set (0.00 sec)
+
+mysql> select f_name,l_name from employee where ssn in (select emp_ssn from dependent where ssn=emp_ssn and f_name=dependent_name and sex=gender);
+Empty set (0.00 sec)
+
+mysql> select f_name,l_name from employee where exists(select * from dependent where ssn=emp_ssn and f_name=dependent_name and sex=gender);
+Empty set (0.03 sec)
+
+mysql> select f_name,l_name from employee where not exists (select *from dependent where ssn=emp_ssn);
++--------+--------+
+| f_name | l_name |
++--------+--------+
+| manish | pandey |
++--------+--------+
+1 row in set (0.00 sec)
+
+mysql> select f_name,l_name from employee where not exists(select *from works_on where p_no in(select p_num from project where Dnum=10)) and not exists(select *from works_on,project where Essn=ssn and p_no=p_num);
+Empty set (0.03 sec)
+
+mysql> select distinct Essn from works_on where p_no in(1,2,3);
++------------+
+| Essn       |
++------------+
+| 2395480008 |
+| 2395480015 |
+| 2395480009 |
+| 2395480010 |
+| 2395480014 |
+| 2395480001 |
+| 2395480002 |
++------------+
+7 rows in set (0.00 sec)
+
+mysql> select sum(salary),max(salary),min(salary),avg(salary) from employee;
++-------------+-------------+-------------+-------------+
+| sum(salary) | max(salary) | min(salary) | avg(salary) |
++-------------+-------------+-------------+-------------+
+|     1024500 |      162500 |       19500 |  93136.3636 |
++-------------+-------------+-------------+-------------+
+1 row in set (0.00 sec)
+
+mysql> select sum(salary),max(salary),min(salary),avg(salary) from employee where Dno = (select dnum from dept where dname='COE');
++-------------+-------------+-------------+-------------+
+| sum(salary) | max(salary) | min(salary) | avg(salary) |
++-------------+-------------+-------------+-------------+
+|      409500 |      162500 |       19500 | 102375.0000 |
++-------------+-------------+-------------+-------------+
+1 row in set (0.00 sec)
+
+mysql> select count(*) from employee;
++----------+
+| count(*) |
++----------+
+|       11 |
++----------+
+1 row in set (0.00 sec)
+
+mysql> select count(*) from employee where Dno=(select dnum from dept where dname='MDM');
++----------+
+| count(*) |
++----------+
+|        3 |
++----------+
+1 row in set (0.00 sec)
+
+mysql> select count(distinct salary) from employee;
++------------------------+
+| count(distinct salary) |
++------------------------+
+|                      9 |
++------------------------+
+1 row in set (0.00 sec)
+
+mysql> select f_name,l_name from employee where (select count(*) from dependent where ssn=emp_ssn)>=2;
++---------+--------+
+| f_name  | l_name |
++---------+--------+
+| akshata | hegde  |
+| rajesh  | shetty |
+| ravi    | bhat   |
+| ganesh  | nayar  |
++---------+--------+
+4 rows in set (0.00 sec)
+
+mysql> select dnum,count(*),avg(salary) from dept,employee where dnum=Dno  group by dnum;
++------+----------+-------------+
+| dnum | count(*) | avg(salary) |
++------+----------+-------------+
+|   10 |        4 | 102375.0000 |
+|   11 |        4 | 100000.0000 |
+|   12 |        3 |  71666.6667 |
++------+----------+-------------+
+3 rows in set (0.00 sec)
+
+mysql> select Dno,count(*),avg(salary) from employee group by Dno;
++------+----------+-------------+
+| Dno  | count(*) | avg(salary) |
++------+----------+-------------+
+|   10 |        4 | 102375.0000 |
+|   11 |        4 | 100000.0000 |
+|   12 |        3 |  71666.6667 |
++------+----------+-------------+
+3 rows in set (0.00 sec)
+
+mysql> select p_name,p_num,count(*) from project,works_on where p_no=p_num group by p_num,p_name;
++-----------------+-------+----------+
+| p_name          | p_num | count(*) |
++-----------------+-------+----------+
+| ProductX        |     1 |        2 |
+| ProductY        |     2 |        3 |
+| ProductZ        |     3 |        2 |
+| Computerization |    10 |        1 |
+| Reorganization  |    20 |        2 |
+| Newbenefits     |    30 |        3 |
++-----------------+-------+----------+
+6 rows in set (0.00 sec)
+
+mysql> select p_name,p_num,count(*) from project,works_on where p_no=p_num group by p_num,p_name having count(*)>2;
++-------------+-------+----------+
+| p_name      | p_num | count(*) |
++-------------+-------+----------+
+| ProductY    |     2 |        3 |
+| Newbenefits |    30 |        3 |
++-------------+-------+----------+
+2 rows in set (0.00 sec)
+
+mysql> select p_name,p_num,count(*) from project,works_on,employee where p_no=p_num and Dno=10 and ssn=Essn group by p_num,p_name;
++-----------------+-------+----------+
+| p_name          | p_num | count(*) |
++-----------------+-------+----------+
+| ProductZ        |     3 |        2 |
+| Computerization |    10 |        1 |
+| Newbenefits     |    30 |        3 |
++-----------------+-------+----------+
+3 rows in set (0.01 sec)
+
+mysql> exit;

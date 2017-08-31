@@ -1,0 +1,188 @@
+mysql> select f_name,l_name from employee where Dno = 11 and ssn in(select Essn from works_on where hrs>=6 and  p_no in(select p_num from project where p_name = 'ProductX'));
+ERROR 1046 (3D000): No database selected
+mysql> use Company;
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Database changed
+mysql> select f_name,l_name from employee where Dno = 11 and ssn in(select Essn from works_on where hrs>=6 and  p_no in(select p_num from project where p_name = 'ProductX'));
++--------+--------+
+| f_name | l_name |
++--------+--------+
+| ganesh | nayar  |
++--------+--------+
+1 row in set (0.00 sec)
+
+mysql> select f_name,l_name from employee,dependent where f_name = dependent_name and emp_ssn = ssn;
+Empty set (0.00 sec)
+
+mysql> select f_name,l_name from employee where Super_ssn in (select ssn from employee where f_name = 'rajesh' and l_name= 'shetty');
++---------+--------+
+| f_name  | l_name |
++---------+--------+
+| akshata | hegde  |
+| manish  | pandey |
++---------+--------+
+2 rows in set (0.00 sec)
+
+mysql> select dname,count(*) from dept,employee where avg(salary)>30000 and dnum=Dno;
+ERROR 1111 (HY000): Invalid use of group function
+mysql> select dname,dnum,count(*) from dept,employee where avg(salary)>30000 and dnum=Dno group by dnum;
+ERROR 1111 (HY000): Invalid use of group function
+mysql> select dname,dnum,count(ssn) from dept,employee where avg(salary)>30000 and dnum=Dno;
+ERROR 1111 (HY000): Invalid use of group function
+mysql> select dname,dnum,count(ssn) from dept,employee where avg(salary)>30000 and dnum=Dno group by dnum;
+ERROR 1111 (HY000): Invalid use of group function
+mysql> select dname,dnum,count(salary) from dept,employee where avg(salary)>30000 and dnum=Dno group by dnum;
+ERROR 1111 (HY000): Invalid use of group function
+mysql> select dname,count(*) from dept where dnum in(select Dno from employee where avg(salary)>30000 group by Dno);
+ERROR 1111 (HY000): Invalid use of group function
+mysql> select dname,count(*) from dept,employee where Dno=dnum group by dname having avg(salary)>30000;
++-------+----------+
+| dname | count(*) |
++-------+----------+
+| COE   |        4 |
+| EDM   |        4 |
+| MDM   |        3 |
++-------+----------+
+3 rows in set (0.00 sec)
+
+mysql> select dname,count(*) from dept,employee where Dno=dnum group by dname having avg(salary)>70000;
++-------+----------+
+| dname | count(*) |
++-------+----------+
+| COE   |        4 |
+| EDM   |        4 |
+| MDM   |        3 |
++-------+----------+
+3 rows in set (0.00 sec)
+
+mysql> select dname,count(*) from dept,employee where Dno=dnum group by dname having avg(salary)>700000;
+Empty set (0.00 sec)
+
+mysql> select dname,count(*) from dept,employee where Dno=dnum group by dname having avg(salary)>100000;
++-------+----------+
+| dname | count(*) |
++-------+----------+
+| COE   |        4 |
++-------+----------+
+1 row in set (0.00 sec)
+
+mysql> select count(*) from employee where sex = 'M' and salary > 30000;
++----------+
+| count(*) |
++----------+
+|        5 |
++----------+
+1 row in set (0.00 sec)
+
+mysql> select count(*) from employee where sex = 'M' and salary > 30000 group by Dno;
++----------+
+| count(*) |
++----------+
+|        2 |
+|        2 |
+|        1 |
++----------+
+3 rows in set (0.00 sec)
+
+mysql> select f_name,l_name from employee where Dno in (select Dno from employee where salary = max(salary));
+ERROR 1111 (HY000): Invalid use of group function
+mysql> select f_name,l_name from employee where Dno in (select Dno from employee where (select max(salary) from employee));
++----------+----------+
+| f_name   | l_name   |
++----------+----------+
+| akshata  | hegde    |
+| manish   | pandey   |
+| swathi   | bhat     |
+| prajna   | alate    |
+| rajani   | bayri    |
+| mahesh   | sodankur |
+| rakshita | purohit  |
+| rajesh   | shetty   |
+| ravi     | bhat     |
+| rajesh   | krishnan |
+| ganesh   | nayar    |
++----------+----------+
+11 rows in set (0.00 sec)
+
+mysql> select f_name,l_name from employee where Dno in (select Dno from employee where salary = (select max(salary) from employee));
++---------+--------+
+| f_name  | l_name |
++---------+--------+
+| akshata | hegde  |
+| manish  | pandey |
+| prajna  | alate  |
+| rajesh  | shetty |
++---------+--------+
+4 rows in set (0.00 sec)
+
+mysql> select f_name,l_name from employee where super_ssn = '2395480014';
++----------+---------+
+| f_name   | l_name  |
++----------+---------+
+| prajna   | alate   |
+| rakshita | purohit |
++----------+---------+
+2 rows in set (0.00 sec)
+
+mysql> select f_name,l_name from employee where salary - min(salary)>=10000 group by Dno;
+ERROR 1111 (HY000): Invalid use of group function
+mysql> select f_name,l_name from employee where salary - (select min(salary) from employee) >=10000;
++----------+----------+
+| f_name   | l_name   |
++----------+----------+
+| akshata  | hegde    |
+| manish   | pandey   |
+| swathi   | bhat     |
+| rajani   | bayri    |
+| rakshita | purohit  |
+| rajesh   | shetty   |
+| ravi     | bhat     |
+| rajesh   | krishnan |
+| ganesh   | nayar    |
++----------+----------+
+9 rows in set (0.00 sec)
+
+mysql> select p_name,sum(hrs) from project,works_on where p_no=p_num group by p_name;
++-----------------+----------+
+| p_name          | sum(hrs) |
++-----------------+----------+
+| Computerization |     16.0 |
+| Newbenefits     |     22.0 |
+| ProductX        |     13.0 |
+| ProductY        |     27.5 |
+| ProductZ        |     11.5 |
+| Reorganization  |     18.5 |
++-----------------+----------+
+6 rows in set (0.00 sec)
+
+mysql> select dname,avg(salary) from dept,employee group by dname;
++-------+-------------+
+| dname | avg(salary) |
++-------+-------------+
+| COE   |  93136.3636 |
+| EDM   |  93136.3636 |
+| MDM   |  93136.3636 |
++-------+-------------+
+3 rows in set (0.01 sec)
+
+mysql> select dname,avg(salary) from dept,employee where dnum=Dno group by dname;
++-------+-------------+
+| dname | avg(salary) |
++-------+-------------+
+| COE   | 102375.0000 |
+| EDM   | 100000.0000 |
+| MDM   |  71666.6667 |
++-------+-------------+
+3 rows in set (0.00 sec)
+
+mysql> select avg(salary) from employee where sex= 'F';
++-------------+
+| avg(salary) |
++-------------+
+|  85400.0000 |
++-------------+
+1 row in set (0.00 sec)
+
+mysql> exit;

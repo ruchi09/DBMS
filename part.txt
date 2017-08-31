@@ -1,0 +1,7 @@
+56,DC Motor,Yellow,16,London
+45,Stepper Motor,Grey,32,Delhi
+22,Processor Kit,Green,19,Madhurai
+46,BreadBoard,White,11,Chennai
+61,Wires,Black,20,London
+11,Proximity Sensors,Blue,23,Banglore
+9,Display,Black,24,Delhi

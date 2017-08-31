@@ -1,0 +1,454 @@
+mysql> select FirstName,LastName  from Employee  where SupSSN IN(select ESSN from Employee where SupSSN IN (select ESSN from Employee where FirstName like 'B%'));
++-----------+----------+
+| FirstName | LastName |
++-----------+----------+
+| Ruchi     | Saha     |
+| Shivam    | Singh    |
+| Eshan     | Dash     |
+| Brahmi    | Dwivedi  |
++-----------+----------+
+4 rows in set (0.00 sec)
+
+mysql> select FirstName, LastName  from Employee e , Dept d  where d.MgrSSN NOT IN(select ESSN from Dependencies) and e.ESSN=d.MgrSSN;
++-----------+----------+
+| FirstName | LastName |
++-----------+----------+
+| Shivam    | Singh    |
+| Brahmi    | Dwivedi  |
+| Jaytha    | Reddy    |
++-----------+----------+
+3 rows in set (0.00 sec)
+
+mysql> select AVG(salary) from Employee where Gender='F';
++---------------+
+| AVG(salary)   |
++---------------+
+| 201260.000000 |
++---------------+
+1 row in set (0.00 sec)
+
+mysql> 
+mysql> 
+mysql> select FirstName,LastName from Employee where ESSN NOT IN (select ESSN from WorksOn);
++-----------+----------+
+| FirstName | LastName |
++-----------+----------+
+| Jaytha    | Reddy    |
++-----------+----------+
+1 row in set (0.00 sec)
+
+mysql> select FirstName, LastName from Employee e, WorksOn w  where e.ESSN=w.ESSN;
++-----------+------------+
+| FirstName | LastName   |
++-----------+------------+
+| Manasa    | Kandimalla |
+| Ruchi     | Saha       |
+| Shivam    | Singh      |
+| Eshan     | Dash       |
+| Nayan     | Mane       |
+| Brahmi    | Dwivedi    |
++-----------+------------+
+6 rows in set (0.00 sec)
+
+mysql> select FirstName, LastName  from Projects p,WorksOn w, Employee e where p.Dno=10 and p.Pno=w.Pno and e.ESSN=w.ESSN;
++-----------+----------+
+| FirstName | LastName |
++-----------+----------+
+| Ruchi     | Saha     |
+| Shivam    | Singh    |
+| Eshan     | Dash     |
++-----------+----------+
+3 rows in set (0.00 sec)
+
+mysql> select FirstName,LastName from Employee, Dependencies where Name=FirstName;
++-----------+----------+
+| FirstName | LastName |
++-----------+----------+
+| Nayan     | Mane     |
++-----------+----------+
+1 row in set (0.00 sec)
+
+mysql> select FirstName, LastName from Employee where SupSSN IN (select ESSN from Employee where FirstName='Brahmi');
++-----------+------------+
+| FirstName | LastName   |
++-----------+------------+
+| Manasa    | Kandimalla |
+| Jaytha    | Reddy      |
++-----------+------------+
+2 rows in set (0.00 sec)
+
+mysql> select FirstName, LastName from Employee where ESSN IN (select ESSN from WorksOn,Projects where DNo=10 and Pname='Smart Car' and Projects.Pno=WorksOn.Pno and Projects.Hrs>6);
++-----------+----------+
+| FirstName | LastName |
++-----------+----------+
+| Ruchi     | Saha     |
+| Shivam    | Singh    |
++-----------+----------+
+2 rows in set (0.00 sec)
+
+mysql> select d.Dname,e.count(*) from Employee e,Dept d  (select DNo from Dept where (select AVG(Salary) from Employee group by DNo)>20000);
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '*) from Employee e,Dept d  (select DNo from Dept where (select AVG(Salary) from ' at line 1
+mysql> select d.Dname,e.count(*) from Employee e,Dept d where d.Dno=e.Dno group by DName having avg(e.Salary)>20000;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '*) from Employee e,Dept d where d.Dno=e.Dno group by DName having avg(e.Salary)>' at line 1
+mysql> select d.Dname,count(*) from Employee e,Dept d where d.Dno=e.Dno group by DName having avg(e.Salary)>20000;
++-----------+----------+
+| Dname     | count(*) |
++-----------+----------+
+| Designing |        3 |
+| IT        |        1 |
+| Marketing |        3 |
++-----------+----------+
+3 rows in set (0.00 sec)
+
+mysql> select d.Dname,count(*) from Employee e,Dept d where d.Dno=e.Dno group by DName having avg(e.Salary)>200000;
+Empty set (0.00 sec)
+
+mysql> select d.Dname,count(*) from Employee e,Dept d where d.Dno=e.Dno group by DName having avg(e.Salary)>50000;
++-----------+----------+
+| Dname     | count(*) |
++-----------+----------+
+| Designing |        3 |
+| IT        |        1 |
+| Marketing |        3 |
++-----------+----------+
+3 rows in set (0.00 sec)
+
+mysql> select d.Dname,count(*) from Employee e,Dept d where d.Dno=e.Dno group by DName having avg(e.Salary)>100000;
++-----------+----------+
+| Dname     | count(*) |
++-----------+----------+
+| Designing |        3 |
+| IT        |        1 |
+| Marketing |        3 |
++-----------+----------+
+3 rows in set (0.00 sec)
+
+mysql> select * from Employee
+    -> ;
++--------+-----------+------------+------------+--------+--------+------+-----------+------------+--------+
+| ESSN   | FirstName | LastName   | DOB        | Gender | SupSSN | DNo  | Salary    | MNo        | Mobile |
++--------+-----------+------------+------------+--------+--------+------+-----------+------------+--------+
+| 11233E | Manasa    | Kandimalla | 07/04/1998 | F      | 56129S |   10 |  50000.00 | NULL       | NULL   |
+| 11234E | Ruchi     | Saha       | 09/09/1996 | F      | 56239S |    7 | 202800.00 | 9095123746 | NULL   |
+| 11239S | Shivam    | Singh      | 16/12/1996 | M      | 56239S |    3 | 101400.00 | NULL       | NULL   |
+| 17719E | Eshan     | Dash       | 21/05/1985 | M      | 56239S |   10 |  20000.00 | 9098787456 | NULL   |
+| 17788E | Nayan     | Mane       | 14/01/1995 | F      | 11239S |    7 |  84500.00 | NULL       | NULL   |
+| 56129S | Brahmi    | Dwivedi    | 24/01/1997 | F      | 56239S |    7 | 169000.00 | 9095123111 | NULL   |
+| 56239S | Jaytha    | Reddy      | 04/06/1998 | F      | 56129S |   10 | 500000.00 | NULL       | NULL   |
++--------+-----------+------------+------------+--------+--------+------+-----------+------------+--------+
+7 rows in set (0.00 sec)
+
+mysql> select d.Dname,count(*) from Employee e,Dept d where d.Dno=e.Dno group by DName having avg(e.Salary)>102000;
++-----------+----------+
+| Dname     | count(*) |
++-----------+----------+
+| Designing |        3 |
+| Marketing |        3 |
++-----------+----------+
+2 rows in set (0.00 sec)
+
+mysql> select count(*) from Employee where Gender='M' and Salary>200000 group by Dno;
+Empty set (0.00 sec)
+
+mysql> select count(*) from Employee where Gender='M' and Salary>100000 group by Dno;
++----------+
+| count(*) |
++----------+
+|        1 |
++----------+
+1 row in set (0.00 sec)
+
+mysql> select Dno ,count(*) from Employee where Gender='M' and Salary>100000 group by Dno;
++------+----------+
+| Dno  | count(*) |
++------+----------+
+|    3 |        1 |
++------+----------+
+1 row in set (0.00 sec)
+
+mysql> select Dno ,count(*) from Employee where Gender='M' and Salary>10000 group by Dno;
++------+----------+
+| Dno  | count(*) |
++------+----------+
+|    3 |        1 |
+|   10 |        1 |
++------+----------+
+2 rows in set (0.00 sec)
+
+mysql> select Dno ,count(*) from Employee where Gender='M' and Salary>20000 group by Dno;
++------+----------+
+| Dno  | count(*) |
++------+----------+
+|    3 |        1 |
++------+----------+
+1 row in set (0.00 sec)
+
+mysql> select d.Dname,count(*) from Employee e,Dept d where d.Dno=e.Dno and e.Gender='M'  group by DName having avg(e.Salary)>102000;
+Empty set (0.00 sec)
+
+mysql> select d.Dname,count(*) from Employee e,Dept d where d.Dno=e.Dno and e.Gender='M'  group by DName having avg(e.Salary)>1000;
++-----------+----------+
+| Dname     | count(*) |
++-----------+----------+
+| Designing |        1 |
+| IT        |        1 |
++-----------+----------+
+2 rows in set (0.00 sec)
+
+mysql> select d.Dname,count(*) from Employee e,Dept d where d.Dno=e.Dno and e.Gender='M'  group by DName having avg(e.Salary)>20000;
++-------+----------+
+| Dname | count(*) |
++-------+----------+
+| IT    |        1 |
++-------+----------+
+1 row in set (0.00 sec)
+
+mysql> select FirstName,LastName from Employee where Dno=(select Dno from Employee where Salary>MAX(Salary));
+ERROR 1111 (HY000): Invalid use of group function
+mysql> select FirstName,LastName from Employee where Dno=(select Dno from Employee where Salary>=ALL(select Salary from Employee));
++-----------+------------+
+| FirstName | LastName   |
++-----------+------------+
+| Manasa    | Kandimalla |
+| Eshan     | Dash       |
+| Jaytha    | Reddy      |
++-----------+------------+
+3 rows in set (0.00 sec)
+
+mysql> select FirstName,LastName from Employee where Salary=10000 + (select Salary from Employee where Salary<=ALL(select Salary from Employee));
+Empty set (0.00 sec)
+
+mysql> select FirstName,LastName from Employee where Salary>=10000 + (select Salary from Employee where Salary<=ALL(select Salary from Employee));
++-----------+------------+
+| FirstName | LastName   |
++-----------+------------+
+| Manasa    | Kandimalla |
+| Ruchi     | Saha       |
+| Shivam    | Singh      |
+| Nayan     | Mane       |
+| Brahmi    | Dwivedi    |
+| Jaytha    | Reddy      |
++-----------+------------+
+6 rows in set (0.00 sec)
+
+mysql> select FirstName,LastName from Employee where Salary>=100000 + (select Salary from Employee where Salary<=ALL(select Salary from Employee));
++-----------+----------+
+| FirstName | LastName |
++-----------+----------+
+| Ruchi     | Saha     |
+| Brahmi    | Dwivedi  |
+| Jaytha    | Reddy    |
++-----------+----------+
+3 rows in set (0.00 sec)
+
+mysql> select FirstName, LastName from Emoloyee e,Dept d where e.Salary>(select salary from Employee where e.MgrSSN=ESSN); 
+ERROR 1146 (42S02): Table 'companyDatabase.Emoloyee' doesn't exist
+mysql> select FirstName, LastName from Employee e,Dept d where e.Salary>(select salary from Employee where e.MgrSSN=ESSN); 
+ERROR 1054 (42S22): Unknown column 'e.MgrSSN' in 'where clause'
+mysql> select FirstName, LastName from Employee e, where e.Salary>(select salary from Employee w where e.MgrSSN= w.ESSN); 
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'where e.Salary>(select salary from Employee w where e.MgrSSN= w.ESSN)' at line 1
+mysql> select FirstName, LastName from Employee e, where Salary> (select Salary from Employee where e.MgrSSN=ESSN); 
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'where Salary> (select Salary from Employee where e.MgrSSN=ESSN)' at line 1
+mysql> select FirstName, LastName from Employee e, where exists(select * from Employee w where e.MgrSSN=w.ESSN); 
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'where exists(select * from Employee w where e.MgrSSN=w.ESSN)' at line 1
+mysql> select FirstName, LastName from Employee e, where e.Salary>(select salary from Employee w where e.MgrSSN= w.ESSN); 
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'where e.Salary>(select salary from Employee w where e.MgrSSN= w.ESSN)' at line 1
+mysql> select FirstName, LastName from Employee e where e.Salary>(select salary from Employee w where e.MgrSSN= w.ESSN); 
+ERROR 1054 (42S22): Unknown column 'e.MgrSSN' in 'where clause'
+mysql> system clear
+mysql> select FirstName, LastName from Employee e where e.Salary>(select salary from Employee w where e.MgrSSN= w.ESSN); 
+ERROR 1054 (42S22): Unknown column 'e.MgrSSN' in 'where clause'
+mysql> select FirstName, LastName from Employee e where e.Salary>(select salary from Employee w where MgrSSN= w.ESSN); 
+ERROR 1054 (42S22): Unknown column 'MgrSSN' in 'where clause'
+mysql> select FirstName, LastName from Employee e where e.Salary>all(select salary from Employee w where e.MgrSSN= w.ESSN); 
+ERROR 1054 (42S22): Unknown column 'e.MgrSSN' in 'where clause'
+mysql> select FirstName, LastName from Employee e where e.Salary> all(select salary from Employee w where e.MgrSSN= w.ESSN); 
+ERROR 1054 (42S22): Unknown column 'e.MgrSSN' in 'where clause'
+mysql> select FirstName, LastName from Employee e where e.Salary> (select salary from Employee w where e.SupSSN= w.ESSN); 
++-----------+----------+
+| FirstName | LastName |
++-----------+----------+
+| Jaytha    | Reddy    |
++-----------+----------+
+1 row in set (0.00 sec)
+
+mysql> select FirstName, LastName from Employee e where e.Salary> all(select salary from Employee w where e.SupSSN= w.ESSN); 
++-----------+----------+
+| FirstName | LastName |
++-----------+----------+
+| Jaytha    | Reddy    |
++-----------+----------+
+1 row in set (0.00 sec)
+
+mysql> select FirstName, LastName from Employee e where e.Salary> (select salary from Employee w where e.SupSSN= w.ESSN); 
++-----------+----------+
+| FirstName | LastName |
++-----------+----------+
+| Jaytha    | Reddy    |
++-----------+----------+
+1 row in set (0.00 sec)
+
+mysql> select FirstName, LastName from Employee e where  ESSN IN (select SupSSN from Employee where Dno=(select Dno from Dept where DName='IT')) or Dno=(select Dno from Dept where DName='IT')
+    -> ;
++-----------+----------+
+| FirstName | LastName |
++-----------+----------+
+| Shivam    | Singh    |
+| Jaytha    | Reddy    |
++-----------+----------+
+2 rows in set (0.00 sec)
+
+mysql> select * from Dept;
++-----------+-----+--------+
+| DName     | Dno | MgrSSN |
++-----------+-----+--------+
+| IT        |   3 | 11239S |
+| Marketing |   7 | 56129S |
+| Designing |  10 | 56239S |
++-----------+-----+--------+
+3 rows in set (0.00 sec)
+
+mysql> select FirstName, LastName from Employee e where  ESSN IN (select SupSSN from Employee where Dno=(select Dno from Dept where DName='Designing')) or Dno=(select Dno from Dept where DName='Designing');
++-----------+------------+
+| FirstName | LastName   |
++-----------+------------+
+| Manasa    | Kandimalla |
+| Eshan     | Dash       |
+| Brahmi    | Dwivedi    |
+| Jaytha    | Reddy      |
++-----------+------------+
+4 rows in set (0.00 sec)
+
+mysql> select * from WorksOn;
++--------+------+------+
+| ESSN   | PNo  | Hrs  |
++--------+------+------+
+| 11234E | #12  |    5 |
+| 11239S | #12  |    9 |
+| 17788E | #2   |   12 |
+| 17719E | #284 |   11 |
+| 56129S | #34  |   13 |
+| 11233E | #903 |   12 |
++--------+------+------+
+6 rows in set (0.00 sec)
+
+mysql> select PName,sum(w.Hrs) from Projects p,WorksOn w groupby PName
+    -> ;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'groupby PName' at line 1
+mysql> select PName,sum(w.Hrs) from Projects p,WorksOn w groupby p.Pno;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'groupby p.Pno' at line 1
+mysql> select PName,sum(w.Hrs) from Projects p,WorksOn w where P.Pno=w.Pno group by Pno;
+ERROR 1054 (42S22): Unknown column 'P.Pno' in 'where clause'
+mysql> select PName,sum(w.Hrs) from Projects p,WorksOn w where p.Pno=w.Pno group by Pno;
+ERROR 1052 (23000): Column 'Pno' in group statement is ambiguous
+mysql> select PName,sum(w.Hrs) from Projects p, WorksOn w where p.Pno=w.Pno group by p.Pno;
++-----------------+------------+
+| PName           | sum(w.Hrs) |
++-----------------+------------+
+| Smart Car       |         14 |
+| E-commerce      |         12 |
+| Testing         |         11 |
+| Data Management |         13 |
+| Green Fuel      |         12 |
++-----------------+------------+
+5 rows in set (0.01 sec)
+
+mysql> select * from Projects;
++-----------------+------+------+------+
+| PName           | Pno  | Hrs  | Dno  |
++-----------------+------+------+------+
+| Smart Car       | #12  |   32 |   10 |
+| E-commerce      | #2   |   25 |    3 |
+| Testing         | #284 |   59 |   10 |
+| Data Management | #34  |   21 |    7 |
+| Green Fuel      | #903 |   12 |    7 |
++-----------------+------+------+------+
+5 rows in set (0.01 sec)
+
+mysql> select FirstName, Name from Employee e,Dependencies d where e.Gender='F' and e.ESSN=d.ESSN;
++-----------+---------+
+| FirstName | Name    |
++-----------+---------+
+| Manasa    | Shivani |
+| Ruchi     | Vandana |
+| Nayan     | Nayan   |
++-----------+---------+
+3 rows in set (0.00 sec)
+
+mysql> select * from Dependencies;
++--------+---------+------------+--------------+--------+
+| ESSN   | Name    | DOB        | Relationship | Gender |
++--------+---------+------------+--------------+--------+
+| 11233E | Shivani | 12/12/1992 | Sister       | F      |
+| 11234E | Vandana | 03/02/1970 | Mother       | F      |
+| 17788E | Nayan   | 12/12/1995 | Cousin       | F      |
++--------+---------+------------+--------------+--------+
+3 rows in set (0.01 sec)
+
+mysql> alter table Projects add PLocation;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1
+mysql> alter table Projects add PLocation varchar(20);
+Query OK, 5 rows affected (0.26 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> update Projects set PLocation='Chennai' where Pno='#12';
+Query OK, 1 row affected (0.05 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select * from Plocations
+    -> ;
+ERROR 1146 (42S02): Table 'companyDatabase.Plocations' doesn't exist
+mysql> select * from DeptLocations;
++-----+----------+
+| Dno | Location |
++-----+----------+
+|   3 | Delhi    |
+|   7 | Madhurai |
+|  10 | Lucknow  |
++-----+----------+
+3 rows in set (0.00 sec)
+
+mysql> select * from Projects;
++-----------------+------+------+------+-----------+
+| PName           | Pno  | Hrs  | Dno  | PLocation |
++-----------------+------+------+------+-----------+
+| Smart Car       | #12  |   32 |   10 | Chennai   |
+| E-commerce      | #2   |   25 |    3 | NULL      |
+| Testing         | #284 |   59 |   10 | NULL      |
+| Data Management | #34  |   21 |    7 | NULL      |
+| Green Fuel      | #903 |   12 |    7 | NULL      |
++-----------------+------+------+------+-----------+
+5 rows in set (0.00 sec)
+
+mysql> update Projects set PLocation='Delhi' where Pno='#284';
+Query OK, 1 row affected (0.04 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> update Projects set PLocation='Delhi' where Pno='#2';
+Query OK, 1 row affected (0.03 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> update Projects set PLocation='Lucknow' where Pno='#284';
+Query OK, 1 row affected (0.04 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> update Projects set PLocation='Madhurai' where Pno='#34';
+Query OK, 1 row affected (0.04 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> update Projects set PLocation='Chandigarh' where Pno='#903';
+Query OK, 1 row affected (0.04 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select * from Projects;
++-----------------+------+------+------+------------+
+| PName           | Pno  | Hrs  | Dno  | PLocation  |
++-----------------+------+------+------+------------+
+| Smart Car       | #12  |   32 |   10 | Chennai    |
+| E-commerce      | #2   |   25 |    3 | Delhi      |
+| Testing         | #284 |   59 |   10 | Lucknow    |
+| Data Management | #34  |   21 |    7 | Madhurai   |
+| Green Fuel      | #903 |   12 |    7 | Chandigarh |
++-----------------+------+------+------+------------+
+5 rows in set (0.00 sec)
+

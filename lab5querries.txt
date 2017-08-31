@@ -1,0 +1,508 @@
+
+Q1.
+
+mysql> select Pno from Part where Pno IN(select s.Pno from Spj s,Supplier u where u.Sname='XYZ Supplies' and s.Sno=u.Sno) OR Weight>16;
++-----+
+| Pno |
++-----+
+|   9 |
+|  11 |
+|  22 |
+|  45 |
+|  61 |
++-----+
+5 rows in set (0.00 sec)
+
+
+
+
+Q2.
+
+mysql> select s.Sno,s.Pno,s.Jno
+    -> from Spj s,Supplier su,Part p,Project j
+    -> where su.City=p.City and p.City=j.City and j.City=su.City and s.Sno=su.Sno and s.Pno=p.Pno and s.Jno=j.Jno;
++-----+-----+-----+
+| Sno | Pno | Jno |
++-----+-----+-----+
+|   1 |   9 |  11 |
+|   5 |  61 |  55 |
++-----+-----+-----+
+2 rows in set (0.00 sec)
+
+
+
+
+Q3.
+
+mysql> select s.Sno,s.Pno,s.Jno
+    -> from Spj s,Supplier su,Part p,Project j
+    -> where NOT(su.City=p.City and p.City=j.City and j.City=su.City) and s.Sno=su.Sno and s.Pno=p.Pno and s.Jno=j.Jno;
++-----+-----+-----+
+| Sno | Pno | Jno |
++-----+-----+-----+
+|  76 |   9 |  47 |
+|   8 |  11 |  66 |
+|   1 |  22 |  66 |
+|   1 |  22 |  98 |
+|  12 |  22 |  11 |
+|  76 |  22 |  11 |
+|  12 |  45 |  12 |
+|   4 |  46 |  89 |
+|   4 |  56 |  12 |
+|  32 |  56 |  11 |
+|  32 |  61 |  55 |
++-----+-----+-----+
+11 rows in set (0.01 sec)
+
+
+
+
+Q4.
+
+mysql> select Pno from Spj where Sno IN(select Sno from Supplier where City='London') and Jno IN(select Jno from Project where City='London');
++-----+
+| Pno |
++-----+
+|  61 |
++-----+
+1 row in set (0.00 sec)
+
+
+Q5.
+
+mysql> SELECT p.Pno
+    -> from Spj p,Supplier s,Project j
+    -> where p.Sno=s.Sno and p.Jno=j.Jno and j.City=s.City;
++-----+
+| Pno |
++-----+
+|   9 |
+|  46 |
+|  61 |
+|  22 |
++-----+
+4 rows in set (0.00 sec)
+
+
+Q6.
+
+mysql>  SELECT p.Pno from Spj p,Supplier s,Project j where p.Sno=s.Sno and p.Jno=j.Jno and j.City<>s.City;
++-----+
+| Pno |
++-----+
+|  22 |
+|  56 |
+|  56 |
+|  45 |
+|   9 |
+|  61 |
+|  22 |
+|  11 |
+|  22 |
++-----+
+9 rows in set (0.00 sec)
+
+
+
+Q7.
+
+mysql> select DISTINCT a.Pno,B.Pno
+    -> from Spj a,Spj B
+    -> where a.Sno=B.Sno and a.Pno>B.Pno;
++-----+-----+
+| Pno | Pno |
++-----+-----+
+|  22 |   9 |
+|  45 |  22 |
+|  56 |  46 |
+|  61 |  56 |
++-----+-----+
+4 rows in set (0.00 sec)
+
+
+Q8.
+
+mysql> select SUM(Qty) from Spj where Pno=11 and Sno in(select Sno from Supplier where Sname='Saha Traders');
++----------+
+| SUM(Qty) |
++----------+
+|       49 |
++----------+
+1 row in set (0.00 sec)
+
+Q9.
+
+
+mysql> select Pno,Jno,SUM(Qty)
+    -> from Spj
+    -> GROUP BY Pno,Jno;
++-----+-----+----------+
+| Pno | Jno | SUM(Qty) |
++-----+-----+----------+
+|   9 |  11 |       11 |
+|   9 |  47 |       12 |
+|  11 |  66 |       49 |
+|  22 |  11 |       84 |
+|  22 |  66 |       30 |
+|  22 |  98 |       14 |
+|  45 |  12 |       25 |
+|  46 |  89 |       98 |
+|  56 |  11 |       56 |
+|  56 |  12 |       23 |
+|  61 |  55 |       59 |
++-----+-----+----------+
+11 rows in set (0.00 sec)
+
+Q10.
+
+mysql> select PName 
+    -> from Part
+    -> where Pno IN(select Pno from Spj where Jno IN(select Jno from Project where City='London'));
++---------------+
+| PName         |
++---------------+
+| Processor Kit |
+| Wires         |
++---------------+
+2 rows in set (0.00 sec)
+
+
+Q11.
+
+mysql> select sp.Sno from Spj sp,Part p where  sp.Pno=p.Pno and p.Pno in ( select Pno from Spj  where Sno in  (select sj.Sno from Spj sj,Part pa where  sj.Pno=pa.Pno and pa.Colour='Black')) group by sp.Sno;
++-----+
+| Sno |
++-----+
+|   1 |
+|   5 |
+|  12 |
+|  76 |
++-----+
+4 rows in set (0.00 sec)
+
+
+Q12.
+
+mysql> select Jno
+    -> from Spj s
+    -> where (select AVG(Qty) from Spj p where p.Jno=s.Jno and p.Pno in(select Pno from Part where Pname='Wires')) >
+    -> (select MAX(Qty) from Spj where Jno IN(select Jno from Project where JName='Product X'));
++-----+
+| Jno |
++-----+
+|  55 |
++-----+
+1 row in set (0.00 sec)
+
+
+Q13.
+
+select Sno from Spj where Pno IN(select p.Pno from Part p where p.Pname='Wires') and Qty > (select AVG(Qty) from Spj s where Jno=s.Jno and Pno=s.Pno);
++-----+
+| Sno |
++-----+
+|   5 |
++-----+
+1 row in set (0.01 sec)
+
+Q14.
+
+
+mysql> select DISTINCT Jno from Spj where  NOT EXISTS(select * from Spj s where s.Jno=Jno and s.Sno<>1);
+Empty set (0.00 sec)
+
+
+Q15.
+mysql> select s.Sno,u.Sno from Supplier s,Supplier u  where s.City=u.City and s.Sno<u.Sno ;
++-----+-----+
+| Sno | Sno |
++-----+-----+
+|   1 |  76 |
+|   5 |   8 |
++-----+-----+
+2 rows in set (0.01 sec)
+
+
+Q16.
+
+mysql> select distinct s.Sno from Spj s where NOT EXISTS( select * from Spj p where p.Sno=76 and p.Pno NOT IN( select j.Pno from Spj j where j.Sno=s.Sno)) and s.Sno<>76 ;
++-----+
+| Sno |
++-----+
+|   1 |
++-----+
+1 row in set (0.00 sec)
+
+
+
+Q17.
+
+mysql> select Pno,Weight
+    -> from Part
+    -> where Weight>20;
++-----+--------+
+| Pno | Weight |
++-----+--------+
+|   9 |     24 |
+|  11 |     23 |
+|  45 |     32 |
++-----+--------+
+3 rows in set (0.35 sec)
+
+
+
+Q18.
+
+mysql> select s.Sno supplier,s.Pno part,s.Jno Project,s.Qty, Qty*p.weight Total_weight
+    -> from Spj s,Part p
+    -> where s.Pno=p.Pno;
++----------+------+---------+------+--------------+
+| supplier | part | Project | Qty  | Total_weight |
++----------+------+---------+------+--------------+
+|        1 |    9 |      11 |   11 |          264 |
+|       76 |    9 |      47 |   12 |          288 |
+|        8 |   11 |      66 |   49 |         1127 |
+|        1 |   22 |      66 |   30 |          570 |
+|        1 |   22 |      98 |   14 |          266 |
+|       12 |   22 |      11 |   42 |          798 |
+|       76 |   22 |      11 |   42 |          798 |
+|       12 |   45 |      12 |   25 |          800 |
+|        4 |   46 |      89 |   98 |         1078 |
+|        4 |   56 |      12 |   23 |          368 |
+|       32 |   56 |      11 |   56 |          896 |
+|        5 |   61 |      55 |   36 |          720 |
+|       32 |   61 |      55 |   23 |          460 |
++----------+------+---------+------+--------------+
+13 rows in set (0.00 sec)
+
+
+Q19.
+
+mysql> select Sno,count(DISTINCT Pno)
+    -> from Spj
+    -> group by Sno;
++-----+---------------------+
+| Sno | count(DISTINCT Pno) |
++-----+---------------------+
+|   1 |                   2 |
+|   4 |                   2 |
+|   5 |                   1 |
+|   8 |                   1 |
+|  12 |                   2 |
+|  32 |                   2 |
+|  76 |                   2 |
++-----+---------------------+
+7 rows in set (0.01 sec)
+
+
+Q20.
+
+mysql> select DISTINCT Pno from Spj where Sno in(select s.Sno from Supplier s where s.City='London') or Jno IN (select j.Jno from Project j where j.City='London');
++-----+
+| Pno |
++-----+
+|  11 |
+|  22 |
+|  61 |
++-----+
+3 rows in set (0.00 sec)
+
+
+
+Q21.
+
+mysql> select Distinct s.City Supplier_city, p.City Part_Stored_In_City from Supplier s,Part p where EXISTS(select *  from Spj where s.Sno=Sno and p.Pno=Pno and s.City<>p.City);
++---------------+---------------------+
+| Supplier_city | Part_Stored_In_City |
++---------------+---------------------+
+| Delhi         | Madhurai            |
+| Banglore      | Chennai             |
+| Banglore      | London              |
+| London        | Banglore            |
+| Madhurai      | Delhi               |
+| Chennai       | London              |
++---------------+---------------------+
+6 rows in set (0.00 sec)
+
+
+Q22.
+
+select distinct A.Sno,A.Sname ,B.Pno from Supplier A, Part B where (select count(*) from Spj c where c.Pno=B.Pno and c.Sno=A.Sno)=(select count(DISTINCT D.Jno) from Spj D where D.Sno=A.Sno );
++-----+-------------------+-----+
+| Sno | Sname             | Pno |
++-----+-------------------+-----+
+|   1 | Janta Stores      |   9 |
+|   5 | Qwert Electricals |  61 |
+|   8 | Saha Traders      |  11 |
++-----+-------------------+-----+
+3 rows in set (0.00 sec)
+
+
+
+Q23.
+
+mysql> SELECT j.Pno from Supplier s, Spj j,Project p where s.Sno=j.Sno and p.Jno=j.Jno and p.City=s.City;
++-----+
+| Pno |
++-----+
+|   9 |
+|  46 |
+|  61 |
+|  22 |
++-----+
+4 rows in set (0.00 sec)
+
+
+
+Q24.
+
+mysql> select Sname 
+    -> from Supplier
+    -> where Sno IN( select j.Sno from Spj j,Part p where p.Pno=j.Pno and p.Colour='Black');
++-------------------+
+| Sname             |
++-------------------+
+| Janta Stores      |
+| Qwert Electricals |
+| Sri Supplies      |
+| XYZ Supplies      |
++-------------------+
+4 rows in set (0.00 sec)
+
+
+
+
+
+Q25.
+mysql> select Sno 
+    -> from Supplier
+    -> where Status<(select MAX(Status) from Supplier);
++-----+
+| Sno |
++-----+
+|   1 |
+|   4 |
+|   8 |
+|  12 |
+|  32 |
++-----+
+5 rows in set (0.00 sec)
+
+Q26.
+
+mysql> select Sname from Supplier where Sno NOT IN(select s.Sno from Spj s where s.Pno IN(select Pno from Part where Pname='Wires') );
++-------------------+
+| Sname             |
++-------------------+
+| Janta Stores      |
+| Supply Solutions  |
+| Saha Traders      |
+| Mercy Electronics |
+| XYZ Supplies      |
++-------------------+
+5 rows in set (0.00 sec)
+
+
+
+mysql>  select Sname from Supplier s where NOT EXISTS(select * from Spj  where Pno=61 and Sno=s.Sno);
++-------------------+
+| Sname             |
++-------------------+
+| Janta Stores      |
+| Supply Solutions  |
+| Saha Traders      |
+| Mercy Electronics |
+| XYZ Supplies      |
++-------------------+
+5 rows in set (0.00 sec)
+
+
+Q27.
+
+mysql>  select DISTINCT a.Sno,b.Sno from Spj a,Spj b where NOT EXISTS(select * from Spj s where a.Sno=s.Sno and a.Pno!=b.Pno) and a.Sno<b.Sno;
++-----+-----+
+| Sno | Sno |
++-----+-----+
+|   1 |  76 |
+|   1 |  12 |
+|  12 |  76 |
+|   4 |  32 |
+|   5 |  32 |
++-----+-----+
+5 rows in set (0.00 sec)
+
+
+
+
+Q28.
+mysql> select DISTINCT s.Sno,p.Pno from Spj s,Part p where p.Pno NOT IN(select Pno from Spj where s.Sno=Sno);
++-----+-----+
+| Sno | Pno |
++-----+-----+
+|   1 |  11 |
+|   1 |  45 |
+|   1 |  46 |
+|   1 |  56 |
+|   1 |  61 |
+|  76 |  11 |
+|  76 |  45 |
+|  76 |  46 |
+|  76 |  56 |
+|  76 |  61 |
+|   8 |   9 |
+|   8 |  22 |
+|   8 |  45 |
+|   8 |  46 |
+|   8 |  56 |
+|   8 |  61 |
+|  12 |   9 |
+|  12 |  11 |
+|  12 |  46 |
+|  12 |  56 |
+|  12 |  61 |
+|   4 |   9 |
+|   4 |  11 |
+|   4 |  22 |
+|   4 |  45 |
+|   4 |  61 |
+|  32 |   9 |
+|  32 |  11 |
+|  32 |  22 |
+|  32 |  45 |
+|  32 |  46 |
+|   5 |   9 |
+|   5 |  11 |
+|   5 |  22 |
+|   5 |  45 |
+|   5 |  46 |
+|   5 |  56 |
++-----+-----+
+37 rows in set (0.03 sec)
+
+
+Q29.
+
+mysql> select * from Spj
+    -> group by Sno,Pno,Jno
+    -> ;
++-----+-----+-----+------+
+| Sno | Pno | Jno | Qty  |
++-----+-----+-----+------+
+|   1 |   9 |  11 |   11 |
+|   1 |  22 |  66 |   30 |
+|   1 |  22 |  98 |   14 |
+|   4 |  46 |  89 |   98 |
+|   4 |  56 |  12 |   23 |
+|   5 |  61 |  55 |   36 |
+|   8 |  11 |  66 |   49 |
+|  12 |  22 |  11 |   42 |
+|  12 |  45 |  12 |   25 |
+|  32 |  56 |  11 |   56 |
+|  32 |  61 |  55 |   23 |
+|  76 |   9 |  47 |   12 |
+|  76 |  22 |  11 |   42 |
++-----+-----+-----+------+
+13 rows in set (0.00 sec)
+
+
+

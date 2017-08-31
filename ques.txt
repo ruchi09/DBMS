@@ -1,0 +1,129 @@
+mysql> select * from Dept_locations;
+ERROR 1146 (42S02): Table 'Company.Dept_locations' doesn't exist
+mysql> select * from Dept_location;
+ERROR 1146 (42S02): Table 'Company.Dept_location' doesn't exist
+mysql> select * from Dept_Location;
+ERROR 1146 (42S02): Table 'Company.Dept_Location' doesn't exist
+mysql> select * from Dept_Locations;
++---------+-----------+
+| Dnumber | Dlocation |
++---------+-----------+
+|       1 | Houston   |
+|       4 | Stafford  |
+|       5 | Bellaire  |
+|       5 | Houston   |
+|       5 | Sugarland |
++---------+-----------+
+5 rows in set (0.00 sec)
+
+mysql> select * from Project;
++-----------------+---------+-----------+------+
+| Pname           | Pnumber | Plocation | Dnum |
++-----------------+---------+-----------+------+
+| ProductX        |       1 | Bellaire  |    5 |
+| ProductY        |       2 | Sugarland |    5 |
+| ProductZ        |       3 | Houston   |    5 |
+| Computerization |      10 | Stafford  |    4 |
+| Reorganistaion  |      20 | Houston   |    1 |
+| Newbenefits     |      30 | Stafford  |    4 |
++-----------------+---------+-----------+------+
+6 rows in set (0.00 sec)
+
+mysql> select * from Works_On;
++-----------+-----+-------+
+| Essn      | Pno | Hours |
++-----------+-----+-------+
+| 123456789 |   1 |  32.5 |
+| 123456789 |   2 |   7.5 |
+| 333445555 |   2 |  10.0 |
+| 333445555 |   3 |  10.0 |
+| 333445555 |  10 |  10.0 |
+| 333445555 |  20 |  10.0 |
+| 453453453 |   1 |  20.0 |
+| 453453453 |   2 |  20.0 |
+| 666884444 |   3 |  40.0 |
+| 888665555 |  20 |  NULL |
+| 987654321 |  20 |  15.0 |
+| 987654321 |  30 |  20.0 |
+| 987987987 |  10 |  35.0 |
+| 987987987 |  30 |   5.0 |
+| 999887777 |  10 |  10.0 |
+| 999887777 |  30 |  30.0 |
++-----------+-----+-------+
+16 rows in set (0.00 sec)
+
+mysql> select Fname,Lname,Address
+    -> from Employee 
+    -> where Ssn IN (select Essn from Project, Works_On where Pnumber=Pno and Plocation='Houston') and 
+    -> Dno IN (select Dnumber from Dept_Locations where Dlocations<>'Houston');
+ERROR 1054 (42S22): Unknown column 'Dlocations' in 'where clause'
+mysql> select Fname,Lname,Address from Employee  where Ssn IN (select Essn from Project, Works_On where Pnumber=Pno and Plocation='Houston') and  Dno IN (select Dnumber from Dept_Locations where Dlocation<>'Houston');
++----------+---------+--------------------------+
+| Fname    | Lname   | Address                  |
++----------+---------+--------------------------+
+| Franklin | Wong    | 638 Voss, Houston, TX    |
+| Ramesh   | Narayan | 975 Fire Oak, Humble, TX |
+| Jennifer | Wallace | 291 Berry, Bellaire, TX  |
++----------+---------+--------------------------+
+3 rows in set (0.00 sec)
+
+mysql> 
+mysql> 
+mysql> 
+mysql> 
+mysql> 
+mysql> select Fname,Lname,Address
+    -> from Employee
+    -> where Ssn IN (select Essn from Project, Works_On where Pnumber=Pno and Plocation='Houston') and
+    -> Dno IN (select Dnumber from Dept_Locations where Dlocation<>'Houston');
++----------+---------+--------------------------+
+| Fname    | Lname   | Address                  |
++----------+---------+--------------------------+
+| Franklin | Wong    | 638 Voss, Houston, TX    |
+| Ramesh   | Narayan | 975 Fire Oak, Humble, TX |
+| Jennifer | Wallace | 291 Berry, Bellaire, TX  |
++----------+---------+--------------------------+
+3 rows in set (0.00 sec)
+
+mysql> select Fname,Lname,Address
+    -> from Employee, Project
+    -> where Ssn IN (select Essn from Project, Works_On where Pnumber=Pno and Plocation='Houston') and
+    -> Dnum IN (select Dnumber from Dept_Locations where Dlocation<>'Houston');
++----------+---------+--------------------------+
+| Fname    | Lname   | Address                  |
++----------+---------+--------------------------+
+| Franklin | Wong    | 638 Voss, Houston, TX    |
+| Franklin | Wong    | 638 Voss, Houston, TX    |
+| Franklin | Wong    | 638 Voss, Houston, TX    |
+| Franklin | Wong    | 638 Voss, Houston, TX    |
+| Franklin | Wong    | 638 Voss, Houston, TX    |
+| Ramesh   | Narayan | 975 Fire Oak, Humble, TX |
+| Ramesh   | Narayan | 975 Fire Oak, Humble, TX |
+| Ramesh   | Narayan | 975 Fire Oak, Humble, TX |
+| Ramesh   | Narayan | 975 Fire Oak, Humble, TX |
+| Ramesh   | Narayan | 975 Fire Oak, Humble, TX |
+| James    | Borg    | 450 Stone, Houston, TX   |
+| James    | Borg    | 450 Stone, Houston, TX   |
+| James    | Borg    | 450 Stone, Houston, TX   |
+| James    | Borg    | 450 Stone, Houston, TX   |
+| James    | Borg    | 450 Stone, Houston, TX   |
+| Jennifer | Wallace | 291 Berry, Bellaire, TX  |
+| Jennifer | Wallace | 291 Berry, Bellaire, TX  |
+| Jennifer | Wallace | 291 Berry, Bellaire, TX  |
+| Jennifer | Wallace | 291 Berry, Bellaire, TX  |
+| Jennifer | Wallace | 291 Berry, Bellaire, TX  |
++----------+---------+--------------------------+
+20 rows in set (0.00 sec)
+
+mysql> select Fname,Lname,Address
+    -> from Employee
+    -> where Ssn IN (select Essn from Project, Works_On,Dept_Locations where Pnumber=Pno and Plocation='Houston' and Dnum=Dnumber and Dlocation <>'Houston');
++----------+---------+--------------------------+
+| Fname    | Lname   | Address                  |
++----------+---------+--------------------------+
+| Franklin | Wong    | 638 Voss, Houston, TX    |
+| Ramesh   | Narayan | 975 Fire Oak, Humble, TX |
++----------+---------+--------------------------+
+2 rows in set (0.00 sec)
+
+mysql> quit

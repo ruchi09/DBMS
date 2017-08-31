@@ -1,0 +1,7 @@
+1;partA;blue;7;Delhi
+2;partX;green;15;London
+3;partY;red;22;New York
+4;partB;yellow;12;Bejing
+5;partZ;pink;25;tokyo
+6;partC;blue;18;London
+7;partM;black;10;Delhi
